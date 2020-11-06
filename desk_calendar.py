@@ -2,9 +2,12 @@
 # -*- coding:utf-8 -*-
 import sys
 import os
+import time
+import datetime
+from subprocess import check_output
+
 #picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
 libdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'epd')
-print libdir
 if os.path.exists(libdir):
     sys.path.append(libdir)
 
@@ -16,13 +19,62 @@ import traceback
 
 logging.basicConfig(level=logging.DEBUG)
 
+def current_time() :
+    nowtime = datetime.datetime.now()
+    return nowtime.strftime('%T')
+
+def timestamp(mess):
+        nowtime = datetime.datetime.now()
+        print("{}: {}".format(mess,nowtime.strftime('%T.%f')))
+
+def ntp_status():
+    out = check_output(["ntpq", "-c", "sysinfo"])
+
+    for line in out.splitlines():
+        if "system peer: " in line.decode():
+            peer = re.sub('^system peer: *', '', line.decode())
+
+        if "stratum:" in line.decode():
+            st = re.sub("^stratum: *", "", line.decode())
+
+    return (int(st), peer)
+
+font48 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 48)
+font24 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 24)
+Symb48 = ImageFont.truetype('/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf', 48)
+
 try:
     logging.info("epd7in5_V2 Demo")
+
+    # (ntp_stratum, ntp_sys_peer) = ntp_status()
 
     epd = epd7in5_V2.EPD()
     logging.info("init and Clear")
     epd.init()
     epd.Clear()
+
+    timestamp("make image           ")
+    # Drawing on the Horizontal image
+    HBlackimage = Image.new('1', (epd7in5_V2.EPD_WIDTH, epd7in5_V2.EPD_HEIGHT), 255)  # 298*126
+    HRedimage   = Image.new('1', (epd7in5_V2.EPD_WIDTH, epd7in5_V2.EPD_HEIGHT), 255)  # 298*126    
+
+    # Horizontal
+    timestamp("Drawing              ")
+    drawblack = ImageDraw.Draw(HBlackimage)
+    drawred   = ImageDraw.Draw(HRedimage)
+
+
+    drawblack.text((  0,  0), u'ただ今の時刻', font = font48, fill = 0)
+    drawblack.text((288, 14), u'⏰' ,font = Symb48, fill = 0)
+
+    drawblack.text((  0,102), current_time(), font = font24, fill = 0)
+    # drawblack.text((  0,102), 'NTP stratum:{:2d}'.format(ntp_stratum), font = font24, fill = 0)
+    # drawblack.text(( 48,127),     'peer:{:s}'.format(ntp_sys_peer),    font = font24, fill = 0)
+
+    timestamp("epd.display          ")
+    epd.display(epd.getbuffer(HBlackimage))
+    timestamp("epd.sleep            ")
+    epd.sleep()
 
     #font24 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 24)
     #font18 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 18)
@@ -75,13 +127,13 @@ try:
     # epd.display(epd.getbuffer(Himage2))
     # time.sleep(2)
 
-    logging.info("Clear...")
-    epd.init()
-    epd.Clear()
+    # logging.info("Clear...")
+    # epd.init()
+    # epd.Clear()
 
-    logging.info("Goto Sleep...")
-    epd.sleep()
-    epd.Dev_exit()
+    # logging.info("Goto Sleep...")
+    # epd.sleep()
+    # epd.Dev_exit()
     
 except IOError as e:
     logging.info(e)
