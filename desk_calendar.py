@@ -3,7 +3,9 @@
 import sys
 import os
 import time
+import calendar
 import datetime
+import pprint
 from subprocess import check_output
 
 #picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
@@ -43,8 +45,25 @@ def draw_calendar():
     days = [u'月', u'火', u'水', u'木', u'金', u'土', u'日']
     x = 0
     for day in days:
-        drawblack.text((  x,  0), day, font = font48, fill = 0)
+        drawblack.text((  x,  0), day, font = font24, fill = 0)
         x += 60
+
+    nowtime = datetime.datetime.now()
+    print(nowtime)
+    print(nowtime.year)
+
+    x = 0
+    y = 60
+    pprint.pprint(calendar.monthcalendar(nowtime.year, nowtime.month))
+    for week in calendar.monthcalendar(nowtime.year, nowtime.month):
+        print(week)
+        for day in week:
+            print(day)
+            if day > 0:
+                drawblack.text((  x,  y), str(day), font = font24, fill = 0)
+            x += 60
+        x = 0
+        y += 60
 
 font48 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 48)
 font24 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 24)
@@ -72,7 +91,7 @@ try:
     draw_calendar()
     # drawblack.text((288, 14), u'⏰' ,font = Symb48, fill = 0)
 
-    drawblack.text((  0,102), current_time(), font = font24, fill = 0)
+    drawblack.text((  700, 0), current_time(), font = font24, fill = 0)
     # drawblack.text((  0,102), 'NTP stratum:{:2d}'.format(ntp_stratum), font = font24, fill = 0)
     # drawblack.text(( 48,127),     'peer:{:s}'.format(ntp_sys_peer),    font = font24, fill = 0)
 
