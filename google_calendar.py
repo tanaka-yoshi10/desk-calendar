@@ -54,18 +54,15 @@ def get_events(token_file):
 def map_event(event):
     start = event['start'].get('dateTime', event['start'].get('date'))
     parsedDate = dateutil.parser.parse(start)
-    print({ 'start': start, 'summary': event['summary'] })
-    return { 'start': start, 'summary': event['summary'] }
+    return { 'date': parsedDate, 'start': start, 'summary': event['summary'], 'event': event }
 
 if __name__ == '__main__':
     events_1 = get_events('token_1.pickle')
     events_2 = get_events('token_2.pickle')
 
-    mapped_list = map(map_event, events_2)
-    print(len(list(mapped_list)))
-    print(list(mapped_list))
-    print(mapped_list)
+    events = events_1 + events_2
+
+    mapped_list = map(map_event, events)
     for item in mapped_list:
-        print("=========")
         print(item)
 
