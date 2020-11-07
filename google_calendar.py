@@ -58,7 +58,7 @@ def map_event(event):
     parsedDate = dateutil.parser.parse(start).replace(tzinfo=jp)
     return { 'date': parsedDate, 'start': start, 'summary': event['summary'], 'event': event }
 
-if __name__ == '__main__':
+def google_calendar():
     events_1 = get_events('token_1.pickle')
     events_2 = get_events('token_2.pickle')
 
@@ -66,6 +66,9 @@ if __name__ == '__main__':
 
     mapped_list = map(map_event, events)
     sorted_list = sorted(mapped_list, key=lambda e:e['date'])
-    for item in sorted_list:
-        print(item['start'], item['summary'])
+    return sorted_list
 
+if __name__ == '__main__':
+    list = google_calendar()[:10]
+    for item in list:
+        print(item['start'], item['summary'])
