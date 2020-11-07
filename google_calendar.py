@@ -2,6 +2,8 @@ from __future__ import print_function
 import datetime
 import pickle
 import os.path
+import dateutil.parser
+from datetime import timedelta
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -32,8 +34,10 @@ def get_events(token_file):
 
     # Call the Calendar API
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+    tomorrow = (datetime.datetime.utcnow().replace(hour=0, minute=0, second=0) + timedelta(days=2)).isoformat() + 'Z' # 'Z' indicates UTC time
+    #print(tomorrow)
     print('Getting the upcoming 10 events')
-    events_result = service.events().list(calendarId='primary', timeMin=now,
+    events_result = service.events().list(calendarId='primary', timeMin=now, timeMax=tomorrow,
                                         maxResults=10, singleEvents=True,
                                         orderBy='startTime').execute()
     events = events_result.get('items', [])
@@ -42,7 +46,10 @@ def get_events(token_file):
         print('No upcoming events found.')
     for event in events:
         start = event['start'].get('dateTime', event['start'].get('date'))
-        print(start, event['summary'])
+        parsedDate = dateutil.parser.parse(start)
+        time = parsedDate.strftime('%m-%d %H:%M')
+        print(time, event['summary'])
+    return events
 
 if __name__ == '__main__':
     get_events('token_1.pickle')
