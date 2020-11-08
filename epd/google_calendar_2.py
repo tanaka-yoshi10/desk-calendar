@@ -45,7 +45,7 @@ def get_events(token_file, calendar_list):
     #     print(calendar['id'], calendar['summary'])
     events = []
     for calendar_id in calendar_list:
-        events_result = service.events().list(calendarId=calendar_id, timeMin=now, timeMax=tomorrow,
+        events_result = service.events().list(calendarId=calendar_id, timeMin=now, #timeMax=tomorrow,
                                             maxResults=10, singleEvents=True,
                                             orderBy='startTime').execute()
         local_events = events_result.get('items', [])

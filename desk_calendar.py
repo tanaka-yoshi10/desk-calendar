@@ -36,8 +36,8 @@ def draw_events_title(x, y):
     drawblack.text((x, y + 5), u'📃' ,font = Symb24, fill = 0)
     drawblack.line((x, y + 35, x + 100, y + 35), fill = 0)
 
-def draw_events(x, y):
-    list = google_calendar_2.google_calendar()[:10]
+def draw_events(x, y, max):
+    list = google_calendar_2.google_calendar()[:max]
     for item in list:
         print(item['start'], item['summary'])
         start = item['event']['start'].get('dateTime')
@@ -99,7 +99,7 @@ try:
     draw_calendar(20, 70)
     drawblack.line((420, 0, 420, 600), fill = 0)
     draw_events_title(430, 5)
-    draw_events(430, 45)
+    draw_events(430, 45, 13)
     draw_current_time(740, 450)
 
     timestamp("epd.display          ")
