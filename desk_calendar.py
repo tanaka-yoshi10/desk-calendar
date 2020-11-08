@@ -45,7 +45,8 @@ def draw_events(x, y):
             time = item['date'].strftime('%m-%d %H:%M ')
         else:
             time = item['date'].strftime('%m-%d ')
-        drawblack.text((x, y), time + item['summary'], font = font24, fill = 0)
+        drawblack.text((x, y + 5), u'⭐' ,font = Symb24, fill = 0)
+        drawblack.text((x + 25, y), time + item['summary'], font = font24, fill = 0)
         y += 30
 
 def draw_current_time(x, y):
