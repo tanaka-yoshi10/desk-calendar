@@ -94,9 +94,11 @@ try:
     timestamp("Drawing              ")
     drawblack = ImageDraw.Draw(HBlackimage)
 
-    drawblack.text((  0,  0), u'ただ今の時刻', font = font48, fill = 0)
     draw_calendar()
-    drawblack.text((288, 14), u'⏰' ,font = Symb48, fill = 0)
+
+    nowtime = datetime.datetime.now()
+    current_date = nowtime.strftime('%Y年%m月%d日(%a)')
+    drawblack.text((  80,  0), current_date, font = font24, fill = 0)
 
     list = google_calendar_2.google_calendar()[:10]
     y = 30
