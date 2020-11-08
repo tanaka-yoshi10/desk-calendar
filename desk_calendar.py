@@ -72,6 +72,8 @@ def draw_calendar(initial_x, initial_y):
         for day in week:
             if day > 0:
                 drawblack.text((  x,  y), str(day).rjust(2), font = font24, fill = 0)
+                if day == nowtime.day:
+                    drawblack.rectangle((x, y + 35, x + 25, y + 37), outline = 0)
             x += delta_x
         x = initial_x
         y += delta_y
