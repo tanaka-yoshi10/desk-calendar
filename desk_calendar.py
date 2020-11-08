@@ -27,24 +27,27 @@ def current_time() :
     return nowtime.strftime('%T')
 
 def timestamp(mess):
-        nowtime = datetime.datetime.now()
-        print("{}: {}".format(mess,nowtime.strftime('%T.%f')))
+    nowtime = datetime.datetime.now()
+    print("{}: {}".format(mess,nowtime.strftime('%T.%f')))
 
-def ntp_status():
-    out = check_output(["ntpq", "-c", "sysinfo"])
+def draw_date(x, y):
+    nowtime = datetime.datetime.now()
+    current_date = nowtime.strftime('%Y年%m月%d日(%a)')
+    drawblack.text((x, y), current_date, font = font24, fill = 0)
 
-    for line in out.splitlines():
-        if "system peer: " in line.decode():
-            peer = re.sub('^system peer: *', '', line.decode())
+def draw_events(x, y):
+    list = google_calendar_2.google_calendar()[:10]
+    for item in list:
+        print(item['start'], item['summary'])
+        start = item['event']['start'].get('dateTime')
+        if start:
+            time = item['date'].strftime('%m-%d %H:%M ')
+        else:
+            time = item['date'].strftime('%m-%d ')
+        drawblack.text((x, y), time + item['summary'], font = font24, fill = 0)
+        y += 30
 
-        if "stratum:" in line.decode():
-            st = re.sub("^stratum: *", "", line.decode())
-
-    return (int(st), peer)
-
-def draw_calendar():
-    initial_x = 20
-    initial_y = 70
+def draw_calendar(initial_x, initial_y):
     delta_x = 60
     delta_y = 40
 
@@ -73,108 +76,25 @@ font24 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.
 Symb48 = ImageFont.truetype('/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf', 48)
 
 try:
-    logging.info("epd7in5_V2 Demo")
-
-    # (ntp_stratum, ntp_sys_peer) = ntp_status()
-
     epd = epd7in5_V2.EPD()
-    logging.info("init and Clear")
+    logging.info("init")
     epd.init()
-    # epd.Clear()
 
     timestamp("make image           ")
-    # Drawing on the Horizontal image
     HBlackimage = Image.new('1', (epd7in5_V2.EPD_WIDTH, epd7in5_V2.EPD_HEIGHT), 255)  # 298*126
 
-    # Horizontal
     timestamp("Drawing              ")
     drawblack = ImageDraw.Draw(HBlackimage)
 
-    draw_calendar()
-
-    nowtime = datetime.datetime.now()
-    current_date = nowtime.strftime('%Y年%m月%d日(%a)')
-    drawblack.text((  80,  0), current_date, font = font24, fill = 0)
-
-    list = google_calendar_2.google_calendar()[:10]
-    y = 30
-    for item in list:
-        print(item['start'], item['summary'])
-        start = item['event']['start'].get('dateTime')
-        if start:
-            time = item['date'].strftime('%m-%d %H:%M ')
-        else:
-            time = item['date'].strftime('%m-%d ')
-        drawblack.text((  400,  y), time + item['summary'], font = font24, fill = 0)
-        y += 30
-
+    draw_calendar(20, 70)
+    draw_date(80, 0)
+    draw_events(420, 30)
     drawblack.text((  700, 0), current_time(), font = font24, fill = 0)
-    # drawblack.text((  0,102), 'NTP stratum:{:2d}'.format(ntp_stratum), font = font24, fill = 0)
-    # drawblack.text(( 48,127),     'peer:{:s}'.format(ntp_sys_peer),    font = font24, fill = 0)
 
     timestamp("epd.display          ")
     epd.display(epd.getbuffer(HBlackimage))
     timestamp("epd.sleep            ")
     epd.sleep()
-
-    #font24 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 24)
-    #font18 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 18)
-
-    # Drawing on the Horizontal image
-    # logging.info("1.Drawing on the Horizontal image...")
-    # Himage = Image.new('1', (epd.width, epd.height), 255)  # 255: clear the frame
-    # draw = ImageDraw.Draw(Himage)
-    # draw.text((10, 0), 'hello world', font = font24, fill = 0)
-    # draw.text((10, 20), '7.5inch e-Paper', font = font24, fill = 0)
-    # draw.text((150, 0), u'微雪电子', font = font24, fill = 0)    
-    # draw.line((20, 50, 70, 100), fill = 0)
-    # draw.line((70, 50, 20, 100), fill = 0)
-    # draw.rectangle((20, 50, 70, 100), outline = 0)
-    # draw.line((165, 50, 165, 100), fill = 0)
-    # draw.line((140, 75, 190, 75), fill = 0)
-    # draw.arc((140, 50, 190, 100), 0, 360, fill = 0)
-    # draw.rectangle((80, 50, 130, 100), fill = 0)
-    # draw.chord((200, 50, 250, 100), 0, 360, fill = 0)
-    # epd.display(epd.getbuffer(Himage))
-    # time.sleep(2)
-
-    # Drawing on the Vertical image
-    # logging.info("2.Drawing on the Vertical image...")
-    # Limage = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame
-    # draw = ImageDraw.Draw(Limage)
-    # draw.text((2, 0), 'hello world', font = font18, fill = 0)
-    # draw.text((2, 20), '7.5inch epd', font = font18, fill = 0)
-    # draw.text((20, 50), u'微雪电子', font = font18, fill = 0)
-    # draw.line((10, 90, 60, 140), fill = 0)
-    # draw.line((60, 90, 10, 140), fill = 0)
-    # draw.rectangle((10, 90, 60, 140), outline = 0)
-    # draw.line((95, 90, 95, 140), fill = 0)
-    # draw.line((70, 115, 120, 115), fill = 0)
-    # draw.arc((70, 90, 120, 140), 0, 360, fill = 0)
-    # draw.rectangle((10, 150, 60, 200), fill = 0)
-    # draw.chord((70, 150, 120, 200), 0, 360, fill = 0)
-    # epd.display(epd.getbuffer(Limage))
-    # time.sleep(2)
-
-    # logging.info("3.read bmp file")
-    #Himage = Image.open(os.path.join(picdir, '7in5_V2.bmp'))
-    # epd.display(epd.getbuffer(Himage))
-    # time.sleep(2)
-
-    # logging.info("4.read bmp file on window")
-    # Himage2 = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame
-    #bmp = Image.open(os.path.join(picdir, '100x100.bmp'))
-    # Himage2.paste(bmp, (50,10))
-    # epd.display(epd.getbuffer(Himage2))
-    # time.sleep(2)
-
-    # logging.info("Clear...")
-    # epd.init()
-    # epd.Clear()
-
-    # logging.info("Goto Sleep...")
-    # epd.sleep()
-    # epd.Dev_exit()
     
 except IOError as e:
     logging.info(e)
