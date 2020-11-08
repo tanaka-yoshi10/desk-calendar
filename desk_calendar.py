@@ -22,10 +22,6 @@ import google_calendar_2
 
 logging.basicConfig(level=logging.DEBUG)
 
-def current_time() :
-    nowtime = datetime.datetime.now()
-    return nowtime.strftime('%T')
-
 def timestamp(mess):
     nowtime = datetime.datetime.now()
     print("{}: {}".format(mess,nowtime.strftime('%T.%f')))
@@ -46,6 +42,10 @@ def draw_events(x, y):
             time = item['date'].strftime('%m-%d ')
         drawblack.text((x, y), time + item['summary'], font = font24, fill = 0)
         y += 30
+
+def draw_current_time(x, y):
+    nowtime = datetime.datetime.now()
+    drawblack.text((x, y), nowtime.strftime('%H:%M'), font = font24, fill = 0)
 
 def draw_calendar(initial_x, initial_y):
     delta_x = 60
@@ -86,10 +86,11 @@ try:
     timestamp("Drawing              ")
     drawblack = ImageDraw.Draw(HBlackimage)
 
+    draw_date(80, 10)
     draw_calendar(20, 70)
-    draw_date(80, 0)
-    draw_events(420, 30)
-    drawblack.text((  700, 0), current_time(), font = font24, fill = 0)
+    drawblack.line((420, 0, 420, 600), fill = 0)
+    draw_events(430, 30)
+    draw_current_time(740, 450)
 
     timestamp("epd.display          ")
     epd.display(epd.getbuffer(HBlackimage))
