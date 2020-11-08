@@ -1,0 +1,7 @@
+- file: token_1.pickle
+  calendar_list:
+    - primary
+    - ja.japanese#holiday@group.v.calendar.google.com
+- file: token_2.pickle
+  calendar_list:
+    - primary

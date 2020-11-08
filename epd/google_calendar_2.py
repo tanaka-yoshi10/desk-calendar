@@ -3,7 +3,8 @@ import datetime
 import pickle
 import os.path
 import dateutil.parser
-import  pytz
+import pytz
+import yaml
 from datetime import timedelta
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -66,10 +67,15 @@ def map_event(event):
     return { 'date': parsedDate, 'start': start, 'summary': event['summary'], 'event': event }
 
 def google_calendar():
-    events_1 = get_events('token_1.pickle', ['primary', 'ja.japanese#holiday@group.v.calendar.google.com'])
-    events_2 = get_events('token_2.pickle', ['primary'])
+    events = []
 
-    events = events_1 + events_2
+    with open('setting.yaml') as file:
+        obj = yaml.safe_load(file)
+        print(obj)
+
+        for item in obj:
+            events_local = get_events(item['file'], item['calendar_list'])
+            events.extend(events_local)
 
     mapped_list = map(map_event, events)
     sorted_list = sorted(mapped_list, key=lambda e:e['date'])
