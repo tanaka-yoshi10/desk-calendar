@@ -43,18 +43,24 @@ def ntp_status():
     return (int(st), peer)
 
 def draw_calendar():
+    initial_x = 20
+    initial_y = 70
+    delta_x = 60
+    delta_y = 40
+
     days = [u'月', u'火', u'水', u'木', u'金', u'土', u'日']
-    x = 0
+    x = initial_x
+    y = initial_y
     for day in days:
-        drawblack.text((  x,  0), day, font = font24, fill = 0)
-        x += 60
+        drawblack.text((  x,  initial_y), day, font = font24, fill = 0)
+        x += delta_x
+    y += delta_y
 
     nowtime = datetime.datetime.now()
     print(nowtime)
     print(nowtime.year)
 
-    x = 0
-    y = 60
+    x = initial_x
     pprint.pprint(calendar.monthcalendar(nowtime.year, nowtime.month))
     for week in calendar.monthcalendar(nowtime.year, nowtime.month):
         print(week)
@@ -62,9 +68,9 @@ def draw_calendar():
             print(day)
             if day > 0:
                 drawblack.text((  x,  y), str(day), font = font24, fill = 0)
-            x += 60
-        x = 0
-        y += 60
+            x += delta_x
+        x = initial_x
+        y += delta_y
 
 font48 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 48)
 font24 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 24)
@@ -88,16 +94,21 @@ try:
     timestamp("Drawing              ")
     drawblack = ImageDraw.Draw(HBlackimage)
 
-    # drawblack.text((  0,  0), u'ただ今の時刻', font = font48, fill = 0)
+    drawblack.text((  0,  0), u'ただ今の時刻', font = font48, fill = 0)
     draw_calendar()
-    # drawblack.text((288, 14), u'⏰' ,font = Symb48, fill = 0)
+    drawblack.text((288, 14), u'⏰' ,font = Symb48, fill = 0)
 
     list = google_calendar_2.google_calendar()[:10]
-    y = 0
+    y = 30
     for item in list:
         print(item['start'], item['summary'])
-        drawblack.text((  400,  y), item['summary'], font = font24, fill = 0)
-        y += 50
+        start = item['event']['start'].get('dateTime')
+        if start:
+            time = item['date'].strftime('%m-%d %H:%M ')
+        else:
+            time = item['date'].strftime('%m-%d ')
+        drawblack.text((  400,  y), time + item['summary'], font = font24, fill = 0)
+        y += 30
 
     drawblack.text((  700, 0), current_time(), font = font24, fill = 0)
     # drawblack.text((  0,102), 'NTP stratum:{:2d}'.format(ntp_stratum), font = font24, fill = 0)
