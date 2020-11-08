@@ -12,7 +12,7 @@ from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-def get_events(token_file):
+def get_events(token_file, calendar_list):
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
@@ -38,10 +38,17 @@ def get_events(token_file):
     tomorrow = (datetime.datetime.utcnow().replace(hour=0, minute=0, second=0) + timedelta(days=2)).isoformat() + 'Z' # 'Z' indicates UTC time
     #print(tomorrow)
     print('Getting the upcoming 10 events')
-    events_result = service.events().list(calendarId='primary', timeMin=now, timeMax=tomorrow,
-                                        maxResults=10, singleEvents=True,
-                                        orderBy='startTime').execute()
-    events = events_result.get('items', [])
+    # calendar_list_result = service.calendarList().list().execute()
+    # calendar_list = calendar_list_result.get('items', [])
+    # for calendar in calendar_list:
+    #     print(calendar['id'], calendar['summary'])
+    events = []
+    for calendar_id in calendar_list:
+        events_result = service.events().list(calendarId=calendar_id, timeMin=now, timeMax=tomorrow,
+                                            maxResults=10, singleEvents=True,
+                                            orderBy='startTime').execute()
+        local_events = events_result.get('items', [])
+        events.extend(local_events)
 
     if not events:
         print('No upcoming events found.')
@@ -59,8 +66,8 @@ def map_event(event):
     return { 'date': parsedDate, 'start': start, 'summary': event['summary'], 'event': event }
 
 def google_calendar():
-    events_1 = get_events('token_1.pickle')
-    events_2 = get_events('token_2.pickle')
+    events_1 = get_events('token_1.pickle', ['primary', 'ja.japanese#holiday@group.v.calendar.google.com'])
+    events_2 = get_events('token_2.pickle', ['primary'])
 
     events = events_1 + events_2
 
