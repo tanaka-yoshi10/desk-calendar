@@ -18,6 +18,7 @@ import epd7in5_V2
 import time
 from PIL import Image,ImageDraw,ImageFont
 import traceback
+import google_calendar_2
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -90,6 +91,13 @@ try:
     # drawblack.text((  0,  0), u'ただ今の時刻', font = font48, fill = 0)
     draw_calendar()
     # drawblack.text((288, 14), u'⏰' ,font = Symb48, fill = 0)
+
+    list = google_calendar_2.google_calendar()[:10]
+    y = 0
+    for item in list:
+        print(item['start'], item['summary'])
+        drawblack.text((  400,  y), item['summary'], font = font24, fill = 0)
+        y += 50
 
     drawblack.text((  700, 0), current_time(), font = font24, fill = 0)
     # drawblack.text((  0,102), 'NTP stratum:{:2d}'.format(ntp_stratum), font = font24, fill = 0)
