@@ -57,17 +57,13 @@ def draw_calendar():
     y += delta_y
 
     nowtime = datetime.datetime.now()
-    print(nowtime)
-    print(nowtime.year)
 
     x = initial_x
     pprint.pprint(calendar.monthcalendar(nowtime.year, nowtime.month))
     for week in calendar.monthcalendar(nowtime.year, nowtime.month):
-        print(week)
         for day in week:
-            print(day)
             if day > 0:
-                drawblack.text((  x,  y), str(day), font = font24, fill = 0)
+                drawblack.text((  x,  y), str(day).rjust(2), font = font24, fill = 0)
             x += delta_x
         x = initial_x
         y += delta_y
