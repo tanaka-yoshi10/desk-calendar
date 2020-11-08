@@ -31,6 +31,11 @@ def draw_date(x, y):
     current_date = nowtime.strftime('%Y年%m月%d日(%a)')
     drawblack.text((x, y), current_date, font = font24, fill = 0)
 
+def draw_events_title(x, y):
+    drawblack.text((x + 20, y), 'Events', font = font24, fill = 0)
+    drawblack.text((x, y + 5), u'📃' ,font = Symb24, fill = 0)
+    drawblack.line((x, y + 35, x + 100, y + 35), fill = 0)
+
 def draw_events(x, y):
     list = google_calendar_2.google_calendar()[:10]
     for item in list:
@@ -74,6 +79,7 @@ def draw_calendar(initial_x, initial_y):
 font48 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 48)
 font24 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 24)
 Symb48 = ImageFont.truetype('/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf', 48)
+Symb24 = ImageFont.truetype('/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf', 24)
 
 try:
     epd = epd7in5_V2.EPD()
@@ -89,7 +95,8 @@ try:
     draw_date(80, 10)
     draw_calendar(20, 70)
     drawblack.line((420, 0, 420, 600), fill = 0)
-    draw_events(430, 30)
+    draw_events_title(430, 5)
+    draw_events(430, 45)
     draw_current_time(740, 450)
 
     timestamp("epd.display          ")
