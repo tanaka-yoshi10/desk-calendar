@@ -9,6 +9,7 @@ from datetime import timedelta
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from itertools import groupby
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -57,14 +58,14 @@ def get_events(token_file, calendar_list):
         start = event['start'].get('dateTime', event['start'].get('date'))
         parsedDate = dateutil.parser.parse(start)
         time = parsedDate.strftime('%m-%d %H:%M')
-        print(time, event['summary'])
+        print(parsedDate.date(), time, event['summary'])
     return events
 
 def map_event(event):
     start = event['start'].get('dateTime', event['start'].get('date'))
     jp = pytz.timezone('Asia/Tokyo')
     parsedDate = dateutil.parser.parse(start).replace(tzinfo=jp)
-    return { 'date': parsedDate, 'start': start, 'summary': event['summary'], 'event': event }
+    return { 'dddd': parsedDate.date(), 'date': parsedDate, 'start': start, 'summary': event['summary'], 'event': event }
 
 def google_calendar():
     events = []
@@ -78,10 +79,10 @@ def google_calendar():
             events.extend(events_local)
 
     mapped_list = map(map_event, events)
-    sorted_list = sorted(mapped_list, key=lambda e:e['date'])
-    return sorted_list
+    sorted_list = sorted(mapped_list, key=lambda e:e['date'])[:10]
+    return groupby(sorted_list, key=lambda m: m['dddd'])
 
 if __name__ == '__main__':
-    list = google_calendar()[:10]
+    list = google_calendar()
     for item in list:
         print(item['start'], item['summary'])

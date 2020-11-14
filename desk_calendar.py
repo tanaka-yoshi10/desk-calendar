@@ -37,17 +37,19 @@ def draw_events_title(x, y):
     drawblack.line((x, y + 35, x + 100, y + 35), fill = 0)
 
 def draw_events(x, y, max):
-    list = google_calendar.google_calendar()[:max]
-    for item in list:
-        print(item['start'], item['summary'])
-        start = item['event']['start'].get('dateTime')
-        if start:
-            time = item['date'].strftime('%H:%M ')
-        else:
-            time = ''
-        drawblack.text((x, y + 5), u'⭐' ,font = Symb24, fill = 0)
-        drawblack.text((x + 25, y), time + item['summary'], font = font24, fill = 0)
-        y += 30
+    events = google_calendar.google_calendar()
+    for key, list in events:
+        for item in list:
+            print(item['start'], item['summary'])
+            start = item['event']['start'].get('dateTime')
+            if start:
+                time = item['date'].strftime('%H:%M ')
+            else:
+                time = ''
+            drawblack.text((x, y + 5), u'⭐' ,font = Symb24, fill = 0)
+            drawblack.text((x + 25, y), time + item['summary'], font = font24, fill = 0)
+            y += 30
+        y += 10
 
 def draw_current_time(x, y):
     nowtime = datetime.datetime.now()
