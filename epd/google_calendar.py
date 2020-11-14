@@ -65,7 +65,7 @@ def map_event(event):
     start = event['start'].get('dateTime', event['start'].get('date'))
     jp = pytz.timezone('Asia/Tokyo')
     parsedDate = dateutil.parser.parse(start).replace(tzinfo=jp)
-    return { 'dddd': parsedDate.date(), 'datetime': parsedDate, 'start': start, 'summary': event['summary'], 'event': event }
+    return { 'date': parsedDate.date(), 'datetime': parsedDate, 'start': start, 'summary': event['summary'], 'event': event }
 
 def google_calendar():
     events = []
@@ -80,7 +80,7 @@ def google_calendar():
 
     mapped_list = map(map_event, events)
     sorted_list = sorted(mapped_list, key=lambda e:e['datetime'])[:10]
-    return groupby(sorted_list, key=lambda m: m['dddd'])
+    return groupby(sorted_list, key=lambda m: m['date'])
 
 if __name__ == '__main__':
     list = google_calendar()
