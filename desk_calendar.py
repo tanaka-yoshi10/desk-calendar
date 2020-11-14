@@ -43,7 +43,7 @@ def draw_events(x, y, max):
             print(item['start'], item['summary'])
             start = item['event']['start'].get('dateTime')
             if start:
-                time = item['date'].strftime('%H:%M ')
+                time = item['datetime'].strftime('%H:%M ')
             else:
                 time = ''
             drawblack.text((x, y + 5), u'⭐' ,font = Symb24, fill = 0)
