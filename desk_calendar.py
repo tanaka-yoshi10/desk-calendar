@@ -9,7 +9,6 @@ import pprint
 import jpholiday
 from subprocess import check_output
 
-#picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
 libdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'epd')
 if os.path.exists(libdir):
     sys.path.append(libdir)
@@ -19,7 +18,7 @@ import epd7in5_V2
 import time
 from PIL import Image,ImageDraw,ImageFont
 import traceback
-import google_calendar_2
+import google_calendar
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -38,7 +37,7 @@ def draw_events_title(x, y):
     drawblack.line((x, y + 35, x + 100, y + 35), fill = 0)
 
 def draw_events(x, y, max):
-    list = google_calendar_2.google_calendar()[:max]
+    list = google_calendar.google_calendar()[:max]
     for item in list:
         print(item['start'], item['summary'])
         start = item['event']['start'].get('dateTime')
