@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+spidev = "*"
+jpholiday = "*"
+"rpi.gpio" = "*"
+pillow = "*"
+python-dateutil = "*"
+google-api-python-client = "*"
+google-auth-httplib2 = "*"
+google-auth-oauthlib = "*"
+pyyaml = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.7"
