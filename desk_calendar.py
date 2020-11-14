@@ -38,7 +38,10 @@ def draw_events_title(x, y):
 
 def draw_events(x, y, max):
     events = google_calendar.google_calendar()
-    for key, list in events:
+    for date, list in events:
+        print(date.strftime('%m/%D'))
+        drawblack.text((x, y), date.strftime('%m/%d'), font = font24, fill = 0)
+        y += 30
         for item in list:
             print(item['start'], item['summary'])
             start = item['event']['start'].get('dateTime')
@@ -49,7 +52,6 @@ def draw_events(x, y, max):
             drawblack.text((x, y + 5), u'⭐' ,font = Symb24, fill = 0)
             drawblack.text((x + 25, y), time + item['summary'], font = font24, fill = 0)
             y += 30
-        y += 10
 
 def draw_current_time(x, y):
     nowtime = datetime.datetime.now()
@@ -106,7 +108,7 @@ try:
     drawblack.line((420, 0, 420, 600), fill = 0)
     draw_events_title(430, 5)
     draw_events(430, 45, 13)
-    draw_current_time(740, 450)
+    draw_current_time(740, 0)
 
     timestamp("epd.display          ")
     epd.display(epd.getbuffer(HBlackimage))
