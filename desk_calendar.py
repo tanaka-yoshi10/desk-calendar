@@ -87,14 +87,15 @@ def draw_calendar(initial_x, initial_y):
         x = initial_x
         y += delta_y
 
-    for week in calendar.monthcalendar(nowtime.year, nowtime.month + 1):
+    next_month = (nowtime.month % 12) + 1
+    for week in calendar.monthcalendar(nowtime.year, next_month):
         for day in week:
             if day > 0:
                 # print(datetime.date(nowtime.year, nowtime.month, day))
                 drawblack.text((  x,  y), str(day).rjust(2), font = font24, fill = 0)
                 if day == nowtime.day:
                     drawblack.rectangle((x, y + 35, x + 25, y + 37), fill = 0)
-                if jpholiday.is_holiday(datetime.date(nowtime.year, nowtime.month + 1, day)):
+                if jpholiday.is_holiday(datetime.date(nowtime.year, next_month, day)):
                     # print('holiday', day)
                     drawblack.arc((x - 4, y, x + 29, y + 37), 0, 360, fill = 0)
             x += delta_x
