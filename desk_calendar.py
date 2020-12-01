@@ -61,7 +61,7 @@ def draw_calendar(initial_x, initial_y):
     delta_x = 60
     delta_y = 40
 
-    days = [u'月', u'火', u'水', u'木', u'金', u'土', u'日']
+    days = [u'日', u'月', u'火', u'水', u'木', u'金', u'土']
     x = initial_x
     y = initial_y
     for day in days:
@@ -72,16 +72,30 @@ def draw_calendar(initial_x, initial_y):
     nowtime = datetime.datetime.now()
 
     x = initial_x
-    pprint.pprint(calendar.monthcalendar(nowtime.year, nowtime.month))
+    calendar.setfirstweekday(calendar.SUNDAY)
     for week in calendar.monthcalendar(nowtime.year, nowtime.month):
         for day in week:
             if day > 0:
-                print(datetime.date(nowtime.year, nowtime.month, day))
+                # print(datetime.date(nowtime.year, nowtime.month, day))
                 drawblack.text((  x,  y), str(day).rjust(2), font = font24, fill = 0)
                 if day == nowtime.day:
                     drawblack.rectangle((x, y + 35, x + 25, y + 37), fill = 0)
                 if jpholiday.is_holiday(datetime.date(nowtime.year, nowtime.month, day)):
-                    print('holiday', day)
+                    # print('holiday', day)
+                    drawblack.arc((x - 4, y, x + 29, y + 37), 0, 360, fill = 0)
+            x += delta_x
+        x = initial_x
+        y += delta_y
+
+    for week in calendar.monthcalendar(nowtime.year, nowtime.month + 1):
+        for day in week:
+            if day > 0:
+                # print(datetime.date(nowtime.year, nowtime.month, day))
+                drawblack.text((  x,  y), str(day).rjust(2), font = font24, fill = 0)
+                if day == nowtime.day:
+                    drawblack.rectangle((x, y + 35, x + 25, y + 37), fill = 0)
+                if jpholiday.is_holiday(datetime.date(nowtime.year, nowtime.month + 1, day)):
+                    # print('holiday', day)
                     drawblack.arc((x - 4, y, x + 29, y + 37), 0, 360, fill = 0)
             x += delta_x
         x = initial_x
