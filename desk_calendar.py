@@ -85,6 +85,9 @@ def draw_calendar(initial_x, initial_y):
         x = initial_x
         y += delta_y
 
+    if nowtime.day <= 20:
+      return
+      
     next_month = (nowtime.month % 12) + 1
     for week in calendar.monthcalendar(nowtime.year, next_month):
         for day in week:
