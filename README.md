@@ -5,3 +5,9 @@ Install BCM2835 libraries
 ```
 sudo apt install fonts-noto-cjk ttf-ancient-fonts-symbola
 ```
+
+crontab -l
+```
+@reboot cd /home/pi/desk-calendar && sudo pipenv run python3 desk_calendar.py
+0 * * * * cd /home/pi/desk-calendar && sudo pipenv run python3 desk_calendar.py
+```
