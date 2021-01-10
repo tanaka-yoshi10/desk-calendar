@@ -3,7 +3,9 @@
 https://www.waveshare.com/wiki/7.5inch_e-Paper_HAT
 Install BCM2835 libraries
 ```
-sudo apt install fonts-noto-cjk ttf-ancient-fonts-symbola
+sudo apt install fonts-noto-cjk ttf-ancient-fonts-symbola libjpeg-dev
+sudo pip3 install pipenv
+sudo pipenv install
 ```
 
 crontab -l
