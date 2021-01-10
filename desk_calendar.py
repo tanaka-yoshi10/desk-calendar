@@ -14,7 +14,7 @@ if os.path.exists(libdir):
     sys.path.append(libdir)
 
 import logging
-import epd7in5_V2
+import epd7in5bc
 import time
 from PIL import Image,ImageDraw,ImageFont
 import traceback
@@ -33,7 +33,7 @@ def draw_date(x, y):
 
 def draw_events_title(x, y):
     drawblack.text((x + 20, y), 'Events', font = font24, fill = 0)
-    drawblack.text((x, y + 5), u'📃' ,font = Symb24, fill = 0)
+    drawry.text((x, y + 5), u'📃' ,font = Symb24, fill = 0)
     drawblack.line((x, y + 35, x + 100, y + 35), fill = 0)
 
 def draw_events(x, y, max):
@@ -49,7 +49,7 @@ def draw_events(x, y, max):
                 time = item['datetime'].strftime('%H:%M ')
             else:
                 time = ''
-            drawblack.text((x, y + 5), u'⭐' ,font = Symb24, fill = 0)
+            drawry.text((x, y + 5), u'⭐' ,font = Symb24, fill = 0)
             drawblack.text((x + 25, y), time + item['summary'], font = font24, fill = 0)
             y += 30
 
@@ -58,8 +58,8 @@ def draw_current_time(x, y):
     drawblack.text((x, y), nowtime.strftime('%H:%M'), font = font24, fill = 0)
 
 def draw_calendar(initial_x, initial_y):
-    delta_x = 60
-    delta_y = 40
+    delta_x = 45
+    delta_y = 35
 
     days = [u'日', u'月', u'火', u'水', u'木', u'金', u'土']
     x = initial_x
@@ -78,9 +78,9 @@ def draw_calendar(initial_x, initial_y):
             if day > 0:
                 drawblack.text((  x,  y), str(day).rjust(2), font = font24, fill = 0)
                 if day == nowtime.day:
-                    drawblack.rectangle((x, y + 35, x + 25, y + 37), fill = 0)
+                    drawry.rectangle((x, y + 35, x + 25, y + 37), fill = 0)
                 if jpholiday.is_holiday(datetime.date(nowtime.year, nowtime.month, day)):
-                    drawblack.arc((x - 4, y, x + 29, y + 37), 0, 360, fill = 0)
+                    drawry.arc((x - 4, y, x + 29, y + 37), 0, 360, fill = 0)
             x += delta_x
         x = initial_x
         y += delta_y
@@ -101,29 +101,33 @@ def draw_calendar(initial_x, initial_y):
 
 font48 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 48)
 font24 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 24)
+font18 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 18)
 Symb48 = ImageFont.truetype('/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf', 48)
 Symb24 = ImageFont.truetype('/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf', 24)
+Symb18 = ImageFont.truetype('/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf', 18)
 
 try:
-    epd = epd7in5_V2.EPD()
+    epd = epd7in5bc.EPD()
     logging.info("init")
     epd.init()
 
     timestamp("make image           ")
-    HBlackimage = Image.new('1', (epd7in5_V2.EPD_WIDTH, epd7in5_V2.EPD_HEIGHT), 255)  # 298*126
+    HBlackimage = Image.new('1', (epd7in5bc.EPD_WIDTH, epd7in5bc.EPD_HEIGHT), 255)  # 298*126
+    HRedimage = Image.new('1', (epd7in5bc.EPD_WIDTH, epd7in5bc.EPD_HEIGHT), 255)  # 298*126
 
     timestamp("Drawing              ")
     drawblack = ImageDraw.Draw(HBlackimage)
+    drawry = ImageDraw.Draw(HRedimage)
 
-    draw_date(80, 10)
-    draw_calendar(20, 70)
-    drawblack.line((420, 0, 420, 600), fill = 0)
-    draw_events_title(430, 5)
-    draw_events(430, 45, 13)
+    draw_date(50, 10)
+    draw_calendar(10, 70)
+    drawblack.line((320, 0, 320, 600), fill = 0)
+    draw_events_title(330, 5)
+    draw_events(330, 45, 13)
     draw_current_time(740, 0)
 
     timestamp("epd.display          ")
-    epd.display(epd.getbuffer(HBlackimage))
+    epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
     timestamp("epd.sleep            ")
     epd.sleep()
     
