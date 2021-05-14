@@ -58,7 +58,6 @@ def get_events(token_file, calendar_list):
         start = event['start'].get('dateTime', event['start'].get('date'))
         parsedDate = dateutil.parser.parse(start)
         time = parsedDate.strftime('%m-%d %H:%M')
-        print(parsedDate.date(), time, event['summary'])
     return events
 
 def map_event(event):

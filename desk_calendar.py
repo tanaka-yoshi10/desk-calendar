@@ -39,8 +39,7 @@ def draw_events_title(x, y):
 def draw_events(x, y, max):
     events = google_calendar.google_calendar()
     for date, list in events:
-        print(date.strftime('%m/%D'))
-        drawblack.text((x, y), date.strftime('%m/%d'), font = font24, fill = 0)
+        drawblack.text((x, y), date.strftime('%m/%d(%a)'), font = font24, fill = 0)
         y += 30
         for item in list:
             print(item['start'], item['summary'])
@@ -52,13 +51,14 @@ def draw_events(x, y, max):
             drawblack.text((x, y + 5), u'⭐' ,font = Symb24, fill = 0)
             drawblack.text((x + 25, y), time + item['summary'], font = font24, fill = 0)
             y += 30
+        y += 10
 
 def draw_current_time(x, y):
     nowtime = datetime.datetime.now()
     drawblack.text((x, y), nowtime.strftime('%H:%M'), font = font24, fill = 0)
 
 def draw_calendar(initial_x, initial_y):
-    delta_x = 60
+    delta_x = 55
     delta_y = 40
 
     days = [u'日', u'月', u'火', u'水', u'木', u'金', u'土']
@@ -117,7 +117,7 @@ try:
 
     draw_date(80, 10)
     draw_calendar(20, 70)
-    drawblack.line((420, 0, 420, 600), fill = 0)
+    drawblack.line((405, 0, 405, 600), fill = 0)
     draw_events_title(430, 5)
     draw_events(430, 45, 13)
     draw_current_time(740, 0)
