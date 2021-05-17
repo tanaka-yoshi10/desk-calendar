@@ -99,6 +99,14 @@ def draw_calendar(initial_x, initial_y):
         x = initial_x
         y += delta_y
 
+def add_margin(pil_img, top, right, bottom, left, color):
+    width, height = pil_img.size
+    new_width = width + right + left
+    new_height = height + top + bottom
+    result = Image.new(pil_img.mode, (new_width, new_height), color)
+    result.paste(pil_img, (left, top))
+    return result
+
 font48 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 48)
 font24 = ImageFont.truetype('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc', 24)
 Symb48 = ImageFont.truetype('/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf', 48)
@@ -120,10 +128,13 @@ try:
     drawblack.line((405, 0, 405, 600), fill = 0)
     draw_events_title(430, 5)
     draw_events(430, 45, 13)
-    draw_current_time(740, 0)
+    draw_current_time(730, 0)
 
+    cropped = HBlackimage.crop((0, 0, epd7in5_V2.EPD_WIDTH - 10, epd7in5_V2.EPD_HEIGHT))
+    img = add_margin(cropped, 0, 10, 0, 0, 255)
     timestamp("epd.display          ")
-    epd.display(epd.getbuffer(HBlackimage))
+    epd.display(epd.getbuffer(img))
+    # epd.display(epd.getbuffer(HBlackimage))
     timestamp("epd.sleep            ")
     epd.sleep()
     
