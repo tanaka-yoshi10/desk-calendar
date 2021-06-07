@@ -58,7 +58,7 @@ def draw_current_time(x, y):
     drawblack.text((x, y), nowtime.strftime('%H:%M'), font = font24, fill = 0)
 
 def draw_calendar(initial_x, initial_y):
-    delta_x = 55
+    delta_x = 45
     delta_y = 40
 
     days = [u'日', u'月', u'火', u'水', u'木', u'金', u'土']
@@ -122,12 +122,13 @@ try:
 
     timestamp("Drawing              ")
     drawblack = ImageDraw.Draw(HBlackimage)
+    line_x = 345
 
-    draw_date(80, 10)
+    draw_date(55, 10)
     draw_calendar(20, 70)
-    drawblack.line((405, 0, 405, 600), fill = 0)
-    draw_events_title(430, 5)
-    draw_events(430, 45, 13)
+    drawblack.line((line_x, 0, line_x, 600), fill = 0)
+    draw_events_title(line_x + 25, 5)
+    draw_events(line_x + 25, 45, 13)
     draw_current_time(730, 0)
 
     cropped = HBlackimage.crop((0, 0, epd7in5_V2.EPD_WIDTH - 10, epd7in5_V2.EPD_HEIGHT))
