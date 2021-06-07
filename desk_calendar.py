@@ -38,8 +38,14 @@ def draw_events_title(x, y):
 
 def draw_events(x, y, max):
     events = google_calendar.google_calendar()
+    now_date = datetime.date.today()
+    days = [u'月', u'火', u'水', u'木', u'金', u'土', u'日']
     for date, list in events:
-        drawblack.text((x, y), date.strftime('%m/%d(%a)'), font = font24, fill = 0)
+        week = days[date.weekday()]
+        label = ''
+        if date == now_date:
+          label = ' ★今日★'
+        drawblack.text((x, y), date.strftime('%m/%d') + '(' + week + ')' + label, font = font24, fill = 0)
         y += 30
         for item in list:
             print(item['start'], item['summary'])
