@@ -127,7 +127,7 @@ try:
     draw_current_time(740, 0)
 
     timestamp("epd.display          ")
-    epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
+    epd.display(epd.getbuffer(HBlackimage.rotate(180)), epd.getbuffer(HRedimage.rotate(180)))
     timestamp("epd.sleep            ")
     epd.sleep()
     
